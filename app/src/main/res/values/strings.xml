@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MatteoMorettoFTPConnection</string>
+    <string name="hello_world">Test FTP</string>
+    <string name="statusdescr">Status:</string>
+    <string name="action_settings">Settings</string>
+
+</resources>
