@@ -45,7 +45,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // MATTEO MORETTO TEST GIT
+        // MATTEO MORETTO TEST GIT 2
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
