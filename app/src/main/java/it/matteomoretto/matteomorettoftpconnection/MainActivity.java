@@ -46,7 +46,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // MATTEO MORETTO
-        //MODIFICA DA UFFICIO 15.05
+        //MODIFICA DA Casa 23.50
 
         int id = item.getItemId();
 
