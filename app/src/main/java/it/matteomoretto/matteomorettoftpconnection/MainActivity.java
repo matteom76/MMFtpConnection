@@ -22,6 +22,8 @@ import java.io.IOException;
 
 public class MainActivity extends ActionBarActivity {
 
+    private FTPClient ConnReference;
+    private Boolean ConnStatus;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -30,7 +32,7 @@ public class MainActivity extends ActionBarActivity {
         Connection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new MakeFTPConnection().execute();
+
             }
         });
     }
@@ -40,6 +42,7 @@ public class MainActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        menu.getItem(R.id.action_disconnect).setEnabled(false);
         return true;
     }
 
@@ -51,8 +54,9 @@ public class MainActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_connect) {
+            ConnReference = new FTPClient();
+            new MakeFTPConnection().execute();
         }
 
         return super.onOptionsItemSelected(item);
@@ -62,23 +66,21 @@ public class MainActivity extends ActionBarActivity {
 
         @Override
         protected String[] doInBackground(Void... param) {
-            FTPClient ConnReference;
             String host = "matteomoretto76.hopto.org";
             int port = 21;
             String username="admin";
             String password="3007Pollo";
-            Boolean status=false;
-            ConnReference = new FTPClient();
+            ConnStatus=false;
+
             try {
                 // connecting to the host
                 ConnReference.connect(host, port);
                 // now check the reply code, if positive mean connection success
                 if (FTPReply.isPositiveCompletion(ConnReference.getReplyCode())) {
                     // login using username & password
-                    status=ConnReference.login(username, password);
+                    ConnStatus=ConnReference.login(username, password);
                     Log.i("Result: ", ConnReference.getStatus());
-                    //TextView StatusMsg = (TextView) findViewById(R.id.StatusValue);
-                    //StatusMsg.setText((status)?"OK":"ERROR");
+
            /*
                * Set File Transfer Mode
                * To avoid corruption issue you must specified a correct
@@ -106,6 +108,8 @@ public class MainActivity extends ActionBarActivity {
         @Override
         protected void onPostExecute(String[] directories) {
 
+            TextView StatusMsg = (TextView) findViewById(R.id.StatusValue);
+            StatusMsg.setText((ConnStatus)?"OK":"ERROR");
             if (directories!=null) {
                 ListView list = (ListView) findViewById(R.id.ListDirectory);
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,

@@ -4,6 +4,11 @@
     <string name="app_name">MatteoMorettoFTPConnection</string>
     <string name="hello_world">Test FTP</string>
     <string name="statusdescr">Status:</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_connect">Connect</string>
+    <string name="action_disconnect">Disconnect</string>
+    <color name="blueTot">#071A52</color>
+    <color name="blueListDir">#112C7C</color>
+    <color name="blueListFile">#197AAE</color>
+    <color name="whiteText">#ffffff</color>
 
 </resources>
