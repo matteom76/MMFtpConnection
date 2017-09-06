@@ -24,17 +24,11 @@ public class MainActivity extends ActionBarActivity {
 
     private FTPClient ConnReference;
     private Boolean ConnStatus;
+    private MenuItem DisconnectItem;
+    private MenuItem ConnectItem;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Button Connection = (Button) findViewById(R.id.Connect);
-        Connection.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
     }
 
 
@@ -42,9 +36,18 @@ public class MainActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        menu.getItem(R.id.action_disconnect).setEnabled(false);
+        super.onCreateOptionsMenu(menu);
         return true;
     }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        DisconnectItem = menu.findItem(R.id.action_disconnect);
+        ConnectItem = menu.findItem(R.id.action_connect);
+        DisconnectItem.setEnabled(false);
+        return true;
+     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -110,6 +113,10 @@ public class MainActivity extends ActionBarActivity {
 
             TextView StatusMsg = (TextView) findViewById(R.id.StatusValue);
             StatusMsg.setText((ConnStatus)?"OK":"ERROR");
+            if (ConnStatus) {
+                ConnectItem.setEnabled(false);
+                DisconnectItem.setEnabled(true);
+            }
             if (directories!=null) {
                 ListView list = (ListView) findViewById(R.id.ListDirectory);
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
