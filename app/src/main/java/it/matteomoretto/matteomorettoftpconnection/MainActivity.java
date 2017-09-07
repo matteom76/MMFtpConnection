@@ -29,6 +29,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ConnStatus = false;
     }
 
 
@@ -44,7 +45,14 @@ public class MainActivity extends ActionBarActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         DisconnectItem = menu.findItem(R.id.action_disconnect);
         ConnectItem = menu.findItem(R.id.action_connect);
-        DisconnectItem.setEnabled(false);
+        if (ConnStatus) {
+            ConnectItem.setEnabled(false);
+            DisconnectItem.setEnabled(true);
+        }
+        else {
+            ConnectItem.setEnabled(true);
+            DisconnectItem.setEnabled(false);
+        }
         return true;
      }
 
@@ -52,14 +60,17 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // MATTEO MORETTO
-        //MODIFICA DA Casa 22.38
+        //MODIFICA DA Casa 23.46  - 07 09 2017
 
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_connect) {
-            ConnReference = new FTPClient();
-            new MakeFTPConnection().execute();
+        switch (id) {
+            case R.id.action_connect:
+                ConnReference = new FTPClient();
+                new MakeFTPConnection().execute();
+                break;
+            case R.id.action_disconnect:
+                new DisconnectFTP().execute();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -73,7 +84,6 @@ public class MainActivity extends ActionBarActivity {
             int port = 21;
             String username="admin";
             String password="3007Pollo";
-            ConnStatus=false;
 
             try {
                 // connecting to the host
@@ -83,14 +93,6 @@ public class MainActivity extends ActionBarActivity {
                     // login using username & password
                     ConnStatus=ConnReference.login(username, password);
                     Log.i("Result: ", ConnReference.getStatus());
-
-           /*
-               * Set File Transfer Mode
-               * To avoid corruption issue you must specified a correct
-               * transfer mode, such as ASCII_FILE_TYPE, BINARY_FILE_TYPE,
-               * EBCDIC_FILE_TYPE .etc. Here, I use BINARY_FILE_TYPE for
-               * transferring text, image, and compressed files.
-            */
                     //ConnReference.setFileType(FTP.BINARY_FILE_TYPE);
                     //ConnReference.enterLocalPassiveMode();
                     FTPFile[] directories = ConnReference.listDirectories("volume(sda1)");
@@ -112,11 +114,8 @@ public class MainActivity extends ActionBarActivity {
         protected void onPostExecute(String[] directories) {
 
             TextView StatusMsg = (TextView) findViewById(R.id.StatusValue);
-            StatusMsg.setText((ConnStatus)?"OK":"ERROR");
-            if (ConnStatus) {
-                ConnectItem.setEnabled(false);
-                DisconnectItem.setEnabled(true);
-            }
+            StatusMsg.setText((ConnStatus)?"OK":"NOT CONN");
+
             if (directories!=null) {
                 ListView list = (ListView) findViewById(R.id.ListDirectory);
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
@@ -126,6 +125,29 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    private class DisconnectFTP extends AsyncTask <Void,Void,Boolean> {
+
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+
+            try {
+                ConnReference.disconnect();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            ConnStatus = result;
+            TextView StatusMsg = (TextView) findViewById(R.id.StatusValue);
+            StatusMsg.setText((ConnStatus)?"OK":"NOT CONN");
+            ListView list = (ListView) findViewById(R.id.ListDirectory);
+            list.setAdapter(null);
+        }
+    }
 
 }
 
