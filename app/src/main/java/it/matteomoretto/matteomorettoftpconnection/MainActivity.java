@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -26,6 +27,8 @@ public class MainActivity extends ActionBarActivity {
     private Boolean ConnStatus;
     private MenuItem DisconnectItem;
     private MenuItem ConnectItem;
+    private String ActualDir;
+    private String PrecDir;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -60,12 +63,13 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // MATTEO MORETTO
-        //MODIFICA DA Casa 23.46  - 07 09 2017
+        //MODIFICA DA Casa 00.53  - 11 09 2017
 
         int id = item.getItemId();
         switch (id) {
             case R.id.action_connect:
                 ConnReference = new FTPClient();
+                ActualDir="volume(sda1)";
                 new MakeFTPConnection().execute();
                 break;
             case R.id.action_disconnect:
@@ -81,27 +85,30 @@ public class MainActivity extends ActionBarActivity {
         @Override
         protected String[] doInBackground(Void... param) {
             String host = "matteomoretto76.hopto.org";
+            //String host = "192.168.1.1";
             int port = 21;
             String username="admin";
             String password="3007Pollo";
 
             try {
                 // connecting to the host
-                ConnReference.connect(host, port);
-                // now check the reply code, if positive mean connection success
-                if (FTPReply.isPositiveCompletion(ConnReference.getReplyCode())) {
-                    // login using username & password
-                    ConnStatus=ConnReference.login(username, password);
-                    Log.i("Result: ", ConnReference.getStatus());
+
+                    ConnReference.connect(host, port);
+                    // now check the reply code, if positive mean connection success
+                    if (FTPReply.isPositiveCompletion(ConnReference.getReplyCode())) {
+                        // login using username & password
+                        ConnStatus = ConnReference.login(username, password);
+                        Log.i("Result: ", ConnReference.getStatus());
+                    }
                     //ConnReference.setFileType(FTP.BINARY_FILE_TYPE);
                     //ConnReference.enterLocalPassiveMode();
-                    FTPFile[] directories = ConnReference.listDirectories("volume(sda1)");
+                    FTPFile[] directories = ConnReference.listDirectories(ActualDir);
                     String[] DirList = new String[directories.length];
                     for (int number = 0; number < directories.length; number++) {
                         DirList[number]=directories[number].getName();
                     }
                     return DirList;
-                }
+
             } catch (Exception e) {
                 Log.i("Error: could not connect to host ", host);
                 Log.i("Error: ", e.getMessage());
@@ -119,8 +126,17 @@ public class MainActivity extends ActionBarActivity {
             if (directories!=null) {
                 ListView list = (ListView) findViewById(R.id.ListDirectory);
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
-                        android.R.layout.simple_list_item_1, android.R.id.text1, directories);
+                        R.layout.listviewdirfile, directories);
                 list.setAdapter(adapter);
+                list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        TextView actView = (TextView) view;
+                        PrecDir = ActualDir;
+                        ActualDir = actView.getText().toString();
+                        new MakeFTPConnection().execute();
+                    };
+                });
             }
         }
     }
