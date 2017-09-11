@@ -19,6 +19,8 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -28,7 +30,9 @@ public class MainActivity extends ActionBarActivity {
     private MenuItem DisconnectItem;
     private MenuItem ConnectItem;
     private String ActualDir;
-    private String PrecDir;
+    private String ActualPath;
+    private String[] ListOfDir;
+    private String[] ListOfFiles;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -69,7 +73,8 @@ public class MainActivity extends ActionBarActivity {
         switch (id) {
             case R.id.action_connect:
                 ConnReference = new FTPClient();
-                ActualDir="volume(sda1)";
+                //ActualDir="volume(sda1)";
+                ActualPath="volume(sda1)/";
                 new MakeFTPConnection().execute();
                 break;
             case R.id.action_disconnect:
@@ -80,10 +85,10 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class MakeFTPConnection extends AsyncTask <Void,Void,String[]> {
+    private class MakeFTPConnection extends AsyncTask <Void,Void,Boolean> {
 
         @Override
-        protected String[] doInBackground(Void... param) {
+        protected Boolean doInBackground(Void... param) {
             String host = "matteomoretto76.hopto.org";
             //String host = "192.168.1.1";
             int port = 21;
@@ -93,6 +98,8 @@ public class MainActivity extends ActionBarActivity {
             try {
                 // connecting to the host
 
+                if (!(ConnStatus)) {
+
                     ConnReference.connect(host, port);
                     // now check the reply code, if positive mean connection success
                     if (FTPReply.isPositiveCompletion(ConnReference.getReplyCode())) {
@@ -100,43 +107,67 @@ public class MainActivity extends ActionBarActivity {
                         ConnStatus = ConnReference.login(username, password);
                         Log.i("Result: ", ConnReference.getStatus());
                     }
-                    //ConnReference.setFileType(FTP.BINARY_FILE_TYPE);
-                    //ConnReference.enterLocalPassiveMode();
-                    FTPFile[] directories = ConnReference.listDirectories(ActualDir);
-                    String[] DirList = new String[directories.length];
-                    for (int number = 0; number < directories.length; number++) {
-                        DirList[number]=directories[number].getName();
-                    }
-                    return DirList;
+                }
+
+                //ConnReference.setFileType(FTP.BINARY_FILE_TYPE);
+                //ConnReference.enterLocalPassiveMode();
+                FTPFile[] directories = ConnReference.listDirectories(ActualPath);
+                FTPFile[] filesOfdir = ConnReference.listFiles(ActualPath);
+
+                String[] DirList = new String[directories.length];
+                for (int number = 0; number < directories.length; number++) {
+                    DirList[number]=directories[number].getName();
+                }
+                ListOfDir = DirList;
+
+                List<String> FileList= new ArrayList<String> ();
+                for (FTPFile ftpFile : filesOfdir) {
+                    FileList.add(ftpFile.getName());
+                }
+
+                ListOfFiles = (String[]) FileList.toArray();
+
+                return true;
+
+
 
             } catch (Exception e) {
                 Log.i("Error: could not connect to host ", host);
                 Log.i("Error: ", e.getMessage());
+                ConnStatus = false;
             }
-            return null;
+            return false;
         }
 
 
         @Override
-        protected void onPostExecute(String[] directories) {
+        protected void onPostExecute(Boolean statusDir) {
 
             TextView StatusMsg = (TextView) findViewById(R.id.StatusValue);
             StatusMsg.setText((ConnStatus)?"OK":"NOT CONN");
 
-            if (directories!=null) {
+            if (ListOfDir!=null) {
                 ListView list = (ListView) findViewById(R.id.ListDirectory);
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
-                        R.layout.listviewdirfile, directories);
+                        R.layout.listviewdirfile, ListOfDir);
                 list.setAdapter(adapter);
                 list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         TextView actView = (TextView) view;
-                        PrecDir = ActualDir;
                         ActualDir = actView.getText().toString();
+                        ActualPath = ActualPath + ActualDir + "/";
+                        Log.i("Next: ", ActualDir);
                         new MakeFTPConnection().execute();
                     };
                 });
+            }
+
+            if (ListOfFiles!=null) {
+                ListView list = (ListView) findViewById(R.id.ListFiles);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
+                        R.layout.listviewdirfile, ListOfFiles);
+                list.setAdapter(adapter);
             }
         }
     }
