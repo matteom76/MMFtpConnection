@@ -122,14 +122,19 @@ public class MainActivity extends ActionBarActivity {
 
                 List<String> FileList= new ArrayList<String> ();
                 for (FTPFile ftpFile : filesOfdir) {
-                    FileList.add(ftpFile.getName());
+                    if ((!(ftpFile.isDirectory())) && (!(ftpFile.getName().equals("core")))) {
+                        FileList.add(ftpFile.getName());
+                    }
                 }
 
-                ListOfFiles = (String[]) FileList.toArray();
+                String[] FileStringList = new String[FileList.size()];
+
+                for(int j =0;j<FileList.size();j++){
+                    FileStringList[j] = FileList.get(j);
+                }
+                ListOfFiles = FileStringList;
 
                 return true;
-
-
 
             } catch (Exception e) {
                 Log.i("Error: could not connect to host ", host);
@@ -144,30 +149,34 @@ public class MainActivity extends ActionBarActivity {
         protected void onPostExecute(Boolean statusDir) {
 
             TextView StatusMsg = (TextView) findViewById(R.id.StatusValue);
-            StatusMsg.setText((ConnStatus)?"OK":"NOT CONN");
+            SetTextStatus(StatusMsg,ConnStatus);
 
-            if (ListOfDir!=null) {
-                ListView list = (ListView) findViewById(R.id.ListDirectory);
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
-                        R.layout.listviewdirfile, ListOfDir);
-                list.setAdapter(adapter);
-                list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        TextView actView = (TextView) view;
-                        ActualDir = actView.getText().toString();
-                        ActualPath = ActualPath + ActualDir + "/";
-                        Log.i("Next: ", ActualDir);
-                        new MakeFTPConnection().execute();
-                    };
-                });
-            }
+            if (ConnStatus) {
+                if (ListOfDir != null) {
+                    ListView list = (ListView) findViewById(R.id.ListDirectory);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
+                            R.layout.listviewdirfile, ListOfDir);
+                    list.setAdapter(adapter);
+                    list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            TextView actView = (TextView) view;
+                            ActualDir = actView.getText().toString();
+                            ActualPath = ActualPath + ActualDir + "/";
+                            Log.i("Next: ", ActualDir);
+                            new MakeFTPConnection().execute();
+                        }
 
-            if (ListOfFiles!=null) {
-                ListView list = (ListView) findViewById(R.id.ListFiles);
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
-                        R.layout.listviewdirfile, ListOfFiles);
-                list.setAdapter(adapter);
+                        ;
+                    });
+                }
+
+                if (ListOfFiles != null) {
+                    ListView list = (ListView) findViewById(R.id.ListFiles);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
+                            R.layout.listviewdirfile, ListOfFiles);
+                    list.setAdapter(adapter);
+                }
             }
         }
     }
@@ -190,13 +199,29 @@ public class MainActivity extends ActionBarActivity {
         protected void onPostExecute(Boolean result) {
             ConnStatus = result;
             TextView StatusMsg = (TextView) findViewById(R.id.StatusValue);
-            StatusMsg.setText((ConnStatus)?"OK":"NOT CONN");
-            ListView list = (ListView) findViewById(R.id.ListDirectory);
-            list.setAdapter(null);
+            SetTextStatus(StatusMsg,ConnStatus);
+            ListView listDir = (ListView) findViewById(R.id.ListDirectory);
+            listDir.setAdapter(null);
+            ListView listFile = (ListView) findViewById(R.id.ListFiles);
+            listFile.setAdapter(null);
+        }
+    }
+
+    private void SetTextStatus(TextView v,Boolean s) {
+        if (s) {
+            v.setText("OK");
+            v.setTextColor(getResources().getColor(R.color.green));
+        }
+        else
+        {
+            v.setText("NOT CONN");
+            v.setTextColor(getResources().getColor(R.color.red));
         }
     }
 
 }
+
+
 
 
 

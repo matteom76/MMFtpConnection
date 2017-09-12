@@ -9,25 +9,25 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="40dp"
+        android:paddingBottom="10dp"
         android:id="@+id/StatusSection">
         <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/statusdescr"
         android:id="@+id/StatusDescr"
         android:textColor="@color/whiteText"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:id="@+id/StatusValue"
             android:textColor="@color/whiteText"
-            android:layout_alignTop="@+id/StatusDescr"
-            android:layout_centerHorizontal="true" />
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/StatusDescr" />
     </RelativeLayout>
 
 
@@ -46,7 +46,8 @@
         android:id="@+id/ListFiles"
         android:background="@color/blueListFile"
         android:layout_below="@+id/ListDirectory"
-        android:layout_alignParentStart="false" />
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="45dp" />
 
 
 </RelativeLayout>
