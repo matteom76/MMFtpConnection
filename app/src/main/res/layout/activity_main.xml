@@ -4,22 +4,23 @@
     android:background="@color/blueTot"
     android:textColor="@color/whiteText"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingTop="6dp"
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
+        android:paddingBottom="0dp"
         android:id="@+id/StatusSection">
         <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/statusdescr"
-        android:id="@+id/StatusDescr"
-        android:textColor="@color/whiteText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/statusdescr"
+            android:id="@+id/StatusDescr"
+            android:textColor="@color/whiteText"
             android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="0dp" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -27,27 +28,60 @@
             android:id="@+id/StatusValue"
             android:textColor="@color/whiteText"
             android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/StatusDescr" />
+            android:layout_toEndOf="@+id/StatusDescr"
+            android:layout_marginTop="0dp"
+            android:layout_marginLeft="10dp" />
+
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:text="&lt;&lt;"
+            android:id="@+id/BtnPrev"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/ViewActualDir"
+            android:textColor="@color/whiteText"
+            android:layout_alignBottom="@+id/BtnPrev"
+            android:layout_alignParentStart="true" />
     </RelativeLayout>
 
 
     <ListView
         android:layout_width="wrap_content"
-        android:layout_height="200dp"
+        android:layout_height="180dp"
         android:id="@+id/ListDirectory"
         android:textColor="@color/whiteText"
         android:background="@color/blueListDir"
         android:layout_below="@+id/StatusSection"
-        android:layout_alignParentStart="true" />
-
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="10dp" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="Tutti"
+        android:id="@+id/BtnSelAll"
+        android:layout_below="@+id/ListDirectory"
+        android:layout_alignParentEnd="true" />
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="200dp"
         android:id="@+id/ListFiles"
         android:background="@color/blueListFile"
+        android:layout_below="@+id/BtnSelAll"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="None"
+        android:id="@+id/BtnSelNone"
         android:layout_below="@+id/ListDirectory"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="45dp" />
+        android:layout_toStartOf="@+id/BtnSelAll" />
 
 
 </RelativeLayout>

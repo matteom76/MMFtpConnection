@@ -1,5 +1,6 @@
 package it.matteomoretto.matteomorettoftpconnection;
 
+import android.graphics.Path;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -29,14 +30,43 @@ public class MainActivity extends ActionBarActivity {
     private Boolean ConnStatus;
     private MenuItem DisconnectItem;
     private MenuItem ConnectItem;
-    private String ActualDir;
     private String ActualPath;
+    private String ActualDir;
     private String[] ListOfDir;
     private String[] ListOfFiles;
+    private List<String> PathList;
+    private List<String> DirNameList;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ConnStatus = false;
+        PathList = new ArrayList<String> ();
+        DirNameList = new ArrayList<String> ();
+        TextView txtStatus = (TextView) findViewById(R.id.StatusValue);
+        SetTextStatus(txtStatus,ConnStatus);
+        Button btnPrev = (Button) findViewById(R.id.BtnPrev);
+        Button btnSelTutto = (Button) findViewById(R.id.BtnSelAll);
+        Button btnSelNone = (Button) findViewById(R.id.BtnSelNone);
+        btnPrev.setEnabled(false);
+        btnSelTutto.setEnabled(false);
+        btnSelNone.setEnabled(false);
+
+        btnPrev.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                ActualDir = DirNameList.get(DirNameList.size()-1);
+                ActualPath = PathList.get(PathList.size()-1);
+                DirNameList.remove(DirNameList.size()-1);
+                PathList.remove(PathList.size()-1);
+                if (PathList.isEmpty()) {
+                    v.setEnabled(false);
+                }
+                new MakeFTPConnection().execute();
+            }
+        });
+
     }
 
 
@@ -73,8 +103,6 @@ public class MainActivity extends ActionBarActivity {
         switch (id) {
             case R.id.action_connect:
                 ConnReference = new FTPClient();
-                //ActualDir="volume(sda1)";
-                ActualPath="volume(sda1)/";
                 new MakeFTPConnection().execute();
                 break;
             case R.id.action_disconnect:
@@ -105,6 +133,10 @@ public class MainActivity extends ActionBarActivity {
                     if (FTPReply.isPositiveCompletion(ConnReference.getReplyCode())) {
                         // login using username & password
                         ConnStatus = ConnReference.login(username, password);
+                        ActualPath="volume(sda1)/";
+                        ActualDir="volume(sda1)";
+                        PathList.clear();
+                        DirNameList.clear();
                         Log.i("Result: ", ConnReference.getStatus());
                     }
                 }
@@ -157,13 +189,19 @@ public class MainActivity extends ActionBarActivity {
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
                             R.layout.listviewdirfile, ListOfDir);
                     list.setAdapter(adapter);
+                    TextView txtActDir = (TextView) findViewById(R.id.ViewActualDir);
+                    txtActDir.setText(ActualDir);
+
                     list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            PathList.add(ActualPath);
+                            DirNameList.add(ActualDir);
+                            Button btnPrev = (Button) findViewById(R.id.BtnPrev);
+                            btnPrev.setEnabled(true);
                             TextView actView = (TextView) view;
                             ActualDir = actView.getText().toString();
                             ActualPath = ActualPath + ActualDir + "/";
-                            Log.i("Next: ", ActualDir);
                             new MakeFTPConnection().execute();
                         }
 
@@ -204,6 +242,8 @@ public class MainActivity extends ActionBarActivity {
             listDir.setAdapter(null);
             ListView listFile = (ListView) findViewById(R.id.ListFiles);
             listFile.setAdapter(null);
+            TextView txtActDir = (TextView) findViewById(R.id.ViewActualDir);
+            txtActDir.setText("");
         }
     }
 
