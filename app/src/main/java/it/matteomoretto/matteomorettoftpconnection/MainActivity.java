@@ -33,7 +33,7 @@ public class MainActivity extends ActionBarActivity {
     private String ActualPath;
     private String ActualDir;
     private String[] ListOfDir;
-    private String[] ListOfFiles;
+    private ArrayList<FileElement> FileList;
     private List<String> PathList;
     private List<String> DirNameList;
 
@@ -152,19 +152,13 @@ public class MainActivity extends ActionBarActivity {
                 }
                 ListOfDir = DirList;
 
-                List<String> FileList= new ArrayList<String> ();
+                FileList= new ArrayList<FileElement> ();
                 for (FTPFile ftpFile : filesOfdir) {
                     if ((!(ftpFile.isDirectory())) && (!(ftpFile.getName().equals("core")))) {
-                        FileList.add(ftpFile.getName());
+                        FileElement fileEl = new FileElement(ftpFile.getName());
+                        FileList.add(fileEl);
                     }
                 }
-
-                String[] FileStringList = new String[FileList.size()];
-
-                for(int j =0;j<FileList.size();j++){
-                    FileStringList[j] = FileList.get(j);
-                }
-                ListOfFiles = FileStringList;
 
                 return true;
 
@@ -209,10 +203,12 @@ public class MainActivity extends ActionBarActivity {
                     });
                 }
 
-                if (ListOfFiles != null) {
+                if (FileList != null) {
                     ListView list = (ListView) findViewById(R.id.ListFiles);
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
-                            R.layout.listviewdirfile, ListOfFiles);
+
+                    FileAdapter adapter=new FileAdapter(MainActivity.this, FileList);
+                    //ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
+                    //        R.layout.listviewdirfile, ListOfFiles);
                     list.setAdapter(adapter);
                 }
             }

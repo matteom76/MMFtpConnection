@@ -73,7 +73,8 @@
         android:id="@+id/ListFiles"
         android:background="@color/blueListFile"
         android:layout_below="@+id/BtnSelAll"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:listSelector="@drawable/list_color_fileselector"/>
 
     <Button
         android:layout_width="wrap_content"

@@ -9,6 +9,7 @@
     <color name="blueTot">#071A52</color>
     <color name="blueListDir">#112C7C</color>
     <color name="blueListFile">#197AAE</color>
+    <color name="blueFileSelected">#E7F3FA</color>
     <color name="whiteText">#ffffff</color>
     <color name="green">#01DF01</color>
     <color name="red">#FF0000</color>
