@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Normal state. -->
-    <item android:drawable="@color/blueListFile"
-        android:state_pressed="false"
-        android:state_selected="false"/>
-    <!-- pressed state. -->
-    <item android:drawable="@color/blueFileSelected"
-        android:state_pressed="true"/>
     <!-- Selected state. -->
-    <item android:drawable="@color/blueFileSelected"
-        android:state_pressed="false"
-        android:state_selected="true"/>
+    <item android:state_selected="true" android:drawable="@color/blueFileSelected" />
+    <!-- Normal state. -->
+    <item android:drawable="@color/blueListFile" />
 </selector>

@@ -204,12 +204,14 @@ public class MainActivity extends ActionBarActivity {
                 }
 
                 if (FileList != null) {
-                    ListView list = (ListView) findViewById(R.id.ListFiles);
+                    final ListView list = (ListView) findViewById(R.id.ListFiles);
 
                     FileAdapter adapter=new FileAdapter(MainActivity.this, FileList);
                     //ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
                     //        R.layout.listviewdirfile, ListOfFiles);
                     list.setAdapter(adapter);
+                    list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+                    list.setItemsCanFocus(false);
                 }
             }
         }
