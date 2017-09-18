@@ -30,6 +30,10 @@
           <option name="url" value="https://matteom1976@bitbucket.org/matteom1976/mmftpconnection.git" />
           <option name="userName" value="" />
         </UrlAndUserName>
+        <UrlAndUserName>
+          <option name="url" value="https://github.com/matteom76/MMFtpConnectionV1.git" />
+          <option name="userName" value="" />
+        </UrlAndUserName>
       </list>
     </option>
     <option name="cloneParentDir" value="C:\Matteo\Progetti_Android\FromBitBucket" />
