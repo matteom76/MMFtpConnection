@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class FileAdapter extends BaseAdapter {
     private ArrayList<FileElement> FilelistData;
     private Context context;
+    private ViewGroup ListObj;
 
     public FileAdapter (Context aContext, ArrayList<FileElement> listData) {
         this.FilelistData = listData;
@@ -45,6 +46,7 @@ public class FileAdapter extends BaseAdapter {
         FileElement finfo=(FileElement) getItem(position);
         TextView txt=(TextView) convertView.findViewById(R.id.textfile);
         txt.setText(finfo.getFileName());
+        ListObj = parent;
         return convertView;
     }
 }

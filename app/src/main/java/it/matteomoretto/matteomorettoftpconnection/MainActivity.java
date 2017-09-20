@@ -21,6 +21,7 @@ import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -36,6 +37,7 @@ public class MainActivity extends ActionBarActivity {
     private ArrayList<FileElement> FileList;
     private List<String> PathList;
     private List<String> DirNameList;
+    private HashMap<Integer,FileElement> FileListSelected;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,7 +99,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // MATTEO MORETTO
-        //MODIFICA DA Casa 00.25  - 19 09 2017
+        //MODIFICA DA Casa 00.24  - 21 09 2017
 
         int id = item.getItemId();
         switch (id) {
@@ -207,11 +209,18 @@ public class MainActivity extends ActionBarActivity {
                     final ListView list = (ListView) findViewById(R.id.ListFiles);
 
                     FileAdapter adapter=new FileAdapter(MainActivity.this, FileList);
-                    //ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
-                    //        R.layout.listviewdirfile, ListOfFiles);
                     list.setAdapter(adapter);
                     list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
                     list.setItemsCanFocus(false);
+                    list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Log.i("Posizione:",String.valueOf(position));
+                            //TextView SelView= (TextView) parent.getItemAtPosition(position);
+                            //SelView.setBackgroundColor(getResources().getColor(R.color.blueListFile));
+                            //SelView.setTextColor(getResources().getColor(R.color.blueListDir));
+                        }
+                    });
                 }
             }
         }
