@@ -208,7 +208,7 @@ public class MainActivity extends ActionBarActivity {
                 if (FileList != null) {
                     final ListView list = (ListView) findViewById(R.id.ListFiles);
 
-                    FileAdapter adapter=new FileAdapter(MainActivity.this, FileList);
+                    final FileAdapter adapter=new FileAdapter(MainActivity.this, FileList);
                     list.setAdapter(adapter);
                     list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
                     list.setItemsCanFocus(false);
@@ -216,6 +216,7 @@ public class MainActivity extends ActionBarActivity {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             Log.i("Posizione:",String.valueOf(position));
+                            adapter.ToggleSetItemCheck(position);
                             //TextView SelView= (TextView) parent.getItemAtPosition(position);
                             //SelView.setBackgroundColor(getResources().getColor(R.color.blueListFile));
                             //SelView.setTextColor(getResources().getColor(R.color.blueListDir));
