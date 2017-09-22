@@ -1,6 +1,7 @@
 package it.matteomoretto.matteomorettoftpconnection;
 
 import android.content.Context;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +43,7 @@ public class FileAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
         if (convertView==null)
         {
             convertView=LayoutInflater.from(context).inflate(R.layout.listviewfile, null);
@@ -50,7 +52,7 @@ public class FileAdapter extends BaseAdapter {
         TextView txt=(TextView) convertView.findViewById(R.id.textfile);
         txt.setText(finfo.getFileName());
         try {
-            if (ItemSelected.valueAt(position)) {
+            if (ItemSelected.get(position)) {
                 txt.setBackgroundColor(context.getResources().getColor(R.color.blueFileSelected));
                 txt.setTextColor(context.getResources().getColor(R.color.blueListDir));
             } else {
@@ -67,8 +69,22 @@ public class FileAdapter extends BaseAdapter {
     }
 
     public void ToggleSetItemCheck(int position) {
-        boolean value = ItemSelected.valueAt(position);
+        boolean value = ItemSelected.get(position);
         ItemSelected.put(position,!value);
+        notifyDataSetChanged();
+    }
+
+    public void SelectAllFile() {
+        for (int i=0; i<=(getCount()-1);i++) {
+            ItemSelected.put(i,true);
+        }
+        notifyDataSetChanged();
+    }
+
+    public void DeselectAllFile() {
+        for (int i=0; i<=(getCount()-1);i++) {
+            ItemSelected.put(i,false);
+        }
         notifyDataSetChanged();
     }
 

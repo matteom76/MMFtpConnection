@@ -38,6 +38,7 @@ public class MainActivity extends ActionBarActivity {
     private List<String> PathList;
     private List<String> DirNameList;
     private HashMap<Integer,FileElement> FileListSelected;
+    private FileAdapter adapterIstance;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,11 +62,32 @@ public class MainActivity extends ActionBarActivity {
                 ActualDir = DirNameList.get(DirNameList.size()-1);
                 ActualPath = PathList.get(PathList.size()-1);
                 DirNameList.remove(DirNameList.size()-1);
+                adapterIstance = null;
                 PathList.remove(PathList.size()-1);
                 if (PathList.isEmpty()) {
                     v.setEnabled(false);
                 }
+
                 new MakeFTPConnection().execute();
+
+            }
+        });
+
+        btnSelTutto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (adapterIstance!=null) {
+                    adapterIstance.SelectAllFile();
+                }
+            }
+        });
+
+        btnSelNone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (adapterIstance!=null) {
+                    adapterIstance.DeselectAllFile();
+                }
             }
         });
 
@@ -105,6 +127,7 @@ public class MainActivity extends ActionBarActivity {
         switch (id) {
             case R.id.action_connect:
                 ConnReference = new FTPClient();
+                adapterIstance = null;
                 new MakeFTPConnection().execute();
                 break;
             case R.id.action_disconnect:
@@ -206,10 +229,21 @@ public class MainActivity extends ActionBarActivity {
                 }
 
                 if (FileList != null) {
-                    final ListView list = (ListView) findViewById(R.id.ListFiles);
-
+                    ListView list = (ListView) findViewById(R.id.ListFiles);
                     final FileAdapter adapter=new FileAdapter(MainActivity.this, FileList);
+                    adapterIstance = adapter;
                     list.setAdapter(adapter);
+                    Button btnSelTutto = (Button) findViewById(R.id.BtnSelAll);
+                    Button btnSelNone = (Button) findViewById(R.id.BtnSelNone);
+                    if (list.getCount()>0) {
+                        btnSelTutto.setEnabled(true);
+                        btnSelNone.setEnabled(true);
+                    }
+                    else
+                    {
+                        btnSelTutto.setEnabled(false);
+                        btnSelNone.setEnabled(false);
+                    }
                     list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
                     list.setItemsCanFocus(false);
                     list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -217,9 +251,6 @@ public class MainActivity extends ActionBarActivity {
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             Log.i("Posizione:",String.valueOf(position));
                             adapter.ToggleSetItemCheck(position);
-                            //TextView SelView= (TextView) parent.getItemAtPosition(position);
-                            //SelView.setBackgroundColor(getResources().getColor(R.color.blueListFile));
-                            //SelView.setTextColor(getResources().getColor(R.color.blueListDir));
                         }
                     });
                 }
@@ -252,17 +283,21 @@ public class MainActivity extends ActionBarActivity {
             listFile.setAdapter(null);
             TextView txtActDir = (TextView) findViewById(R.id.ViewActualDir);
             txtActDir.setText("");
+            Button btnSelTutto = (Button) findViewById(R.id.BtnSelAll);
+            Button btnSelNone = (Button) findViewById(R.id.BtnSelNone);
+            btnSelTutto.setEnabled(false);
+            btnSelNone.setEnabled(false);
         }
     }
 
     private void SetTextStatus(TextView v,Boolean s) {
         if (s) {
-            v.setText("OK");
+            v.setText("CONNECTED");
             v.setTextColor(getResources().getColor(R.color.green));
         }
         else
         {
-            v.setText("NOT CONN");
+            v.setText("DISCONNECTED");
             v.setTextColor(getResources().getColor(R.color.red));
         }
     }
