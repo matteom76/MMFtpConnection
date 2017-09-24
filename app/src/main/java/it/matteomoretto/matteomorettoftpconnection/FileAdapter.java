@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Matteo Moretto on 14/09/2017.
@@ -68,10 +69,11 @@ public class FileAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void ToggleSetItemCheck(int position) {
+    public boolean ToggleSetItemCheck(int position) {
         boolean value = ItemSelected.get(position);
         ItemSelected.put(position,!value);
         notifyDataSetChanged();
+        return ItemSelected.get(position);
     }
 
     public void SelectAllFile() {

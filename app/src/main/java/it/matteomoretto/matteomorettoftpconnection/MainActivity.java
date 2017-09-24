@@ -1,6 +1,7 @@
 package it.matteomoretto.matteomorettoftpconnection;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.graphics.Path;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -105,7 +106,7 @@ public class MainActivity extends ActionBarActivity {
         btnSelDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DownLoadFile().execute(FileList.get(0));
+                new DownLoadFile().execute();
             }
         });
 
@@ -251,6 +252,7 @@ public class MainActivity extends ActionBarActivity {
                     final FileAdapter adapter = new FileAdapter(MainActivity.this, FileList);
                     adapterIstance = adapter;
                     list.setAdapter(adapter);
+                    FileListSelected = new HashMap<Integer, FileElement>();
                     Button btnSelTutto = (Button) findViewById(R.id.BtnSelAll);
                     Button btnSelNone = (Button) findViewById(R.id.BtnSelNone);
                     Button btnSelDownload = (Button) findViewById(R.id.BtnSelDownload);
@@ -268,8 +270,15 @@ public class MainActivity extends ActionBarActivity {
                     list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Log.i("Posizione:", String.valueOf(position));
-                            adapter.ToggleSetItemCheck(position);
+                            if (adapter.ToggleSetItemCheck(position)) {
+                                    FileElement fElement=FileList.get(position);
+                                    FileListSelected.put(position,fElement);
+                                    Log.i("FileAggiunto:",FileListSelected.get(position).getFileName());
+                            }
+                            else
+                            {
+                                FileListSelected.remove(position);
+                            }
                         }
                     });
                 }
@@ -323,10 +332,10 @@ public class MainActivity extends ActionBarActivity {
     }
 
 
-    private class DownLoadFile extends AsyncTask<FileElement, String, Boolean> {
+    private class DownLoadFile extends AsyncTask<Void, String, Boolean> {
 
-
-
+        InputStream input = null;
+        OutputStream output = null;
 
         @Override
         protected void onPreExecute() {
@@ -334,46 +343,91 @@ public class MainActivity extends ActionBarActivity {
             mProgressDialog.setMessage("Downloading file..");
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog.setCancelable(false);
+            mProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    cancel(true);
+                }
+            });
             mProgressDialog.show();
         }
 
-
         @Override
-        protected Boolean doInBackground(FileElement...file) {
+        protected Boolean doInBackground(Void...params) {
 
             int count;
-            InputStream input;
-            OutputStream output;
 
             try {
-                String filePath = ActualPath + file[0].getFileName();
+                FileElement fileToDownload = FileListSelected.get(1);
+                String filePath = ActualPath + fileToDownload.getFileName();
                 input = new BufferedInputStream(ConnReference.retrieveFileStream(filePath));
 
-                output = new FileOutputStream(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" +  file[0].getFileName());
+                output = new FileOutputStream(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" +  fileToDownload.getFileName());
 
                 byte data[] = new byte[1024];
 
                 long total = 0;
 
                 while ((count = input.read(data)) != -1) {
+                    if (isCancelled()) {
+                        return false;
+                    }
                     total += count;
-                    publishProgress("" + (int) ((total * 100) / file[0].getFileSize()));
+                    publishProgress(fileToDownload.getFileName(),"" + (int) ((total * 100) / fileToDownload.getFileSize()));
                     output.write(data, 0, count);
                 }
 
                 output.flush();
-                output.close();
-                input.close();
-            } catch (Exception e) {
+            }
+
+            catch (Exception e) {
                 Log.i("ErrDownload:",e.getMessage());
                 return false;
+            }
+
+            finally {
+                if (input!=null) {
+                    try {
+                        input.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (output!=null) {
+                    try {
+                        output.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
 
             return true;
         }
 
         protected void onProgressUpdate(String... progress) {
-            mProgressDialog.setProgress(Integer.parseInt(progress[0]));
+            mProgressDialog.setMessage(progress[0]);
+            mProgressDialog.setProgress(Integer.parseInt(progress[1]));
+        }
+
+        @Override
+        protected void onCancelled (Boolean result) {
+            if (input!=null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (output!=null) {
+                try {
+                    output.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            mProgressDialog = null;
         }
 
         @Override
@@ -382,6 +436,8 @@ public class MainActivity extends ActionBarActivity {
             mProgressDialog.dismiss();
             mProgressDialog = null;
         }
+
+
     }
 }
 
