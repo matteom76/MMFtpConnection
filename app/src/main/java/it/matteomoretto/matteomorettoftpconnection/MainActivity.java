@@ -51,9 +51,11 @@ public class MainActivity extends ActionBarActivity {
         Button btnPrev = (Button) findViewById(R.id.BtnPrev);
         Button btnSelTutto = (Button) findViewById(R.id.BtnSelAll);
         Button btnSelNone = (Button) findViewById(R.id.BtnSelNone);
+        Button btnSelDownload = (Button) findViewById(R.id.BtnSelDownload);
         btnPrev.setEnabled(false);
         btnSelTutto.setEnabled(false);
         btnSelNone.setEnabled(false);
+        btnSelDownload.setEnabled(false);
 
         btnPrev.setOnClickListener(new View.OnClickListener() {
 
@@ -235,14 +237,17 @@ public class MainActivity extends ActionBarActivity {
                     list.setAdapter(adapter);
                     Button btnSelTutto = (Button) findViewById(R.id.BtnSelAll);
                     Button btnSelNone = (Button) findViewById(R.id.BtnSelNone);
+                    Button btnSelDownload = (Button) findViewById(R.id.BtnSelDownload);
                     if (list.getCount()>0) {
                         btnSelTutto.setEnabled(true);
                         btnSelNone.setEnabled(true);
+                        btnSelDownload.setEnabled(true);
                     }
                     else
                     {
                         btnSelTutto.setEnabled(false);
                         btnSelNone.setEnabled(false);
+                        btnSelDownload.setEnabled(false);
                     }
                     list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
                     list.setItemsCanFocus(false);
@@ -285,8 +290,11 @@ public class MainActivity extends ActionBarActivity {
             txtActDir.setText("");
             Button btnSelTutto = (Button) findViewById(R.id.BtnSelAll);
             Button btnSelNone = (Button) findViewById(R.id.BtnSelNone);
+            Button btnSelDownload = (Button) findViewById(R.id.BtnSelDownload);
             btnSelTutto.setEnabled(false);
             btnSelNone.setEnabled(false);
+            btnSelDownload.setEnabled(false);
+
         }
     }
 
@@ -302,7 +310,24 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+
+    private class DownLoadFile extends AsyncTask<Void,Void,Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... param) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean status) {
+
+        };
+
+
+    }
 }
+
+
 
 
 
