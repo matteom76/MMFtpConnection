@@ -334,7 +334,7 @@ public class MainActivity extends ActionBarActivity {
 
     private class DownLoadFile extends AsyncTask<Void, String, Boolean> {
 
-        InputStream input = null;
+        InputStream inputl = null;
         OutputStream output = null;
 
         @Override
@@ -358,48 +358,68 @@ public class MainActivity extends ActionBarActivity {
 
             int count;
 
-            try {
-                FileElement fileToDownload = FileListSelected.get(1);
+            for (FileElement fileToDownload:FileListSelected.values()) {
+
                 String filePath = ActualPath + fileToDownload.getFileName();
-                input = new BufferedInputStream(ConnReference.retrieveFileStream(filePath));
-
-                output = new FileOutputStream(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" +  fileToDownload.getFileName());
-
-                byte data[] = new byte[1024];
-
-                long total = 0;
-
-                while ((count = input.read(data)) != -1) {
-                    if (isCancelled()) {
-                        return false;
-                    }
-                    total += count;
-                    publishProgress(fileToDownload.getFileName(),"" + (int) ((total * 100) / fileToDownload.getFileSize()));
-                    output.write(data, 0, count);
+                InputStream fileinput = null;
+                try {
+                    fileinput = ConnReference.retrieveFileStream(filePath);
+                } catch (IOException e) {
+                    Log.i("ErrDownload:", e.getMessage());
+                    return false;
                 }
+                try {
 
-                output.flush();
+                    BufferedInputStream input = new BufferedInputStream(fileinput);
+                    output = new FileOutputStream(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + fileToDownload.getFileName());
+
+                    byte data[] = new byte[1024];
+
+                    long total = 0;
+
+                    while ((count = input.read(data)) != -1) {
+                        if (isCancelled()) {
+                            return false;
+                        }
+                        total += count;
+                        publishProgress(fileToDownload.getFileName(), "" + (int) ((total * 100) / fileToDownload.getFileSize()));
+                        output.write(data, 0, count);
+                    }
+
+                    output.flush();
+                    output.close();
+
+
+                } catch (Exception e) {
+                    /*
+                    if (input != null) {
+                        try {
+                            input.close();
+                        } catch (IOException g) {
+                            g.printStackTrace();
+                        }
+                    }
+                    */
+                    Log.i("ErrDownload:", e.getMessage());
+                    return false;
+
+                } finally {
+
+                    if (output != null) {
+                        try {
+                            output.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
             }
 
-            catch (Exception e) {
-                Log.i("ErrDownload:",e.getMessage());
-                return false;
-            }
-
-            finally {
-                if (input!=null) {
-                    try {
-                        input.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (output!=null) {
-                    try {
-                        output.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+            if (inputl != null) {
+                try {
+                    inputl.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
 
@@ -413,9 +433,9 @@ public class MainActivity extends ActionBarActivity {
 
         @Override
         protected void onCancelled (Boolean result) {
-            if (input!=null) {
+            if (inputl!=null) {
                 try {
-                    input.close();
+                    inputl.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
