@@ -354,7 +354,15 @@ public class MainActivity extends ActionBarActivity {
         @Override
         protected Boolean doInBackground(Void...params) {
 
+            File DownloadPath;
 
+            if (FileListSelected.size() > 1) {
+                //Creo la cartella
+                //Setto la variabile DownloadPath con il path compreso la cartella creata
+            }
+            else {
+                // Setto la variabile DownloadPath con il path senza la cartella
+            }
 
             for (FileElement fileToDownload:FileListSelected.values()) {
 
