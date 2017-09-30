@@ -1,8 +1,9 @@
 package it.matteomoretto.matteomorettoftpconnection;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Path;
+import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
@@ -27,7 +28,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,16 +51,17 @@ public class MainActivity extends ActionBarActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_main);
         ConnStatus = false;
         PathList = new ArrayList<String>();
         DirNameList = new ArrayList<String>();
         TextView txtStatus = (TextView) findViewById(R.id.StatusValue);
         SetTextStatus(txtStatus, ConnStatus);
-        Button btnPrev = (Button) findViewById(R.id.BtnPrev);
-        Button btnSelTutto = (Button) findViewById(R.id.BtnSelAll);
-        Button btnSelNone = (Button) findViewById(R.id.BtnSelNone);
-        Button btnSelDownload = (Button) findViewById(R.id.BtnSelDownload);
+        Button btnPrev = getElement(R.id.BtnPrev);
+        Button btnSelTutto = getElement(R.id.BtnSelAll);
+        Button btnSelNone = getElement(R.id.BtnSelNone);
+        Button btnSelDownload = getElement(R.id.BtnSelDownload);
         btnPrev.setEnabled(false);
         btnSelTutto.setEnabled(false);
         btnSelNone.setEnabled(false);
@@ -110,6 +111,11 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+    }
+
+    private  <T> T getElement(int element) {
+        T findelement = (T) MainActivity.this.findViewById(element);
+        return findelement;
     }
 
 
@@ -218,16 +224,16 @@ public class MainActivity extends ActionBarActivity {
         @Override
         protected void onPostExecute(Boolean statusDir) {
 
-            TextView StatusMsg = (TextView) findViewById(R.id.StatusValue);
+            TextView StatusMsg = getElement(R.id.StatusValue);
             SetTextStatus(StatusMsg, ConnStatus);
 
             if (ConnStatus) {
                 if (ListOfDir != null) {
-                    ListView list = (ListView) findViewById(R.id.ListDirectory);
+                    ListView list = getElement(R.id.ListDirectory);
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
                             R.layout.listviewdirfile, ListOfDir);
                     list.setAdapter(adapter);
-                    TextView txtActDir = (TextView) findViewById(R.id.ViewActualDir);
+                    TextView txtActDir = getElement(R.id.ViewActualDir);
                     txtActDir.setText(ActualDir);
 
                     list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -235,7 +241,7 @@ public class MainActivity extends ActionBarActivity {
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             PathList.add(ActualPath);
                             DirNameList.add(ActualDir);
-                            Button btnPrev = (Button) findViewById(R.id.BtnPrev);
+                            Button btnPrev = getElement(R.id.BtnPrev);
                             btnPrev.setEnabled(true);
                             TextView actView = (TextView) view;
                             ActualDir = actView.getText().toString();
@@ -248,14 +254,14 @@ public class MainActivity extends ActionBarActivity {
                 }
 
                 if (FileList != null) {
-                    ListView list = (ListView) findViewById(R.id.ListFiles);
+                    ListView list = getElement(R.id.ListFiles);
                     final FileAdapter adapter = new FileAdapter(MainActivity.this, FileList);
                     adapterIstance = adapter;
                     list.setAdapter(adapter);
                     FileListSelected = new HashMap<Integer, FileElement>();
-                    Button btnSelTutto = (Button) findViewById(R.id.BtnSelAll);
-                    Button btnSelNone = (Button) findViewById(R.id.BtnSelNone);
-                    Button btnSelDownload = (Button) findViewById(R.id.BtnSelDownload);
+                    Button btnSelTutto = getElement(R.id.BtnSelAll);
+                    Button btnSelNone = getElement(R.id.BtnSelNone);
+                    Button btnSelDownload = getElement(R.id.BtnSelDownload);
                     if (list.getCount() > 0) {
                         btnSelTutto.setEnabled(true);
                         btnSelNone.setEnabled(true);
@@ -305,15 +311,15 @@ public class MainActivity extends ActionBarActivity {
             ConnStatus = result;
             TextView StatusMsg = (TextView) findViewById(R.id.StatusValue);
             SetTextStatus(StatusMsg, ConnStatus);
-            ListView listDir = (ListView) findViewById(R.id.ListDirectory);
+            ListView listDir = getElement(R.id.ListDirectory);
             listDir.setAdapter(null);
-            ListView listFile = (ListView) findViewById(R.id.ListFiles);
+            ListView listFile = getElement(R.id.ListFiles);
             listFile.setAdapter(null);
-            TextView txtActDir = (TextView) findViewById(R.id.ViewActualDir);
+            TextView txtActDir = getElement(R.id.ViewActualDir);
             txtActDir.setText("");
-            Button btnSelTutto = (Button) findViewById(R.id.BtnSelAll);
-            Button btnSelNone = (Button) findViewById(R.id.BtnSelNone);
-            Button btnSelDownload = (Button) findViewById(R.id.BtnSelDownload);
+            Button btnSelTutto = getElement(R.id.BtnSelAll);
+            Button btnSelNone = getElement(R.id.BtnSelNone);
+            Button btnSelDownload = getElement(R.id.BtnSelDownload);
             btnSelTutto.setEnabled(false);
             btnSelNone.setEnabled(false);
             btnSelDownload.setEnabled(false);
@@ -354,21 +360,29 @@ public class MainActivity extends ActionBarActivity {
         @Override
         protected Boolean doInBackground(Void...params) {
 
-            File DownloadPath;
+            File DownloadPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            File PathToCheck = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+ "/" + ActualDir);
 
-            if (FileListSelected.size() > 1) {
-                //Creo la cartella
-                //Setto la variabile DownloadPath con il path compreso la cartella creata
+            if (PathToCheck.exists()) {
+                DownloadPath = PathToCheck;
             }
             else {
-                // Setto la variabile DownloadPath con il path senza la cartella
+                if (FileListSelected.size() > 1) {
+                    if (PathToCheck.mkdir()) {
+                        DownloadPath = PathToCheck;
+                    }
+                    else {
+                        Log.i("ErrorDir:", "Error creation");
+                        return false;
+                    }
+                }
             }
 
             for (FileElement fileToDownload:FileListSelected.values()) {
 
                 String fileName = fileToDownload.getFileName();
                 String filePath = ActualPath + fileName;
-                if (!(DownloadFileProgress(filePath,fileName,fileToDownload.getFileSize()))) {
+                if (!(DownloadFileProgress(DownloadPath,filePath,fileName,fileToDownload.getFileSize()))) {
                     return false;
                 }
                 try {
@@ -382,15 +396,15 @@ public class MainActivity extends ActionBarActivity {
         }
 
 
-        private Boolean DownloadFileProgress(String path,String fileN,long size) {
+        private Boolean DownloadFileProgress(File Destination, String path,String fileN,long size) {
             int count;
             InputStream input = null;
             FileOutputStream output = null;
 
             try {
                 input = new BufferedInputStream(ConnReference.retrieveFileStream(path));
-                output = new FileOutputStream(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + fileN);
-                Log.i("Step:", fileN);
+                output = new FileOutputStream(Destination + "/" + fileN);
+
 
                 byte data[] = new byte[1024];
 
