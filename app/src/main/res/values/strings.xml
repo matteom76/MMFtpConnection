@@ -6,6 +6,15 @@
     <string name="statusdescr">Status:</string>
     <string name="action_connect">Connect</string>
     <string name="action_disconnect">Disconnect</string>
+
+    <string name="setting_page">Setting</string>
+    <string name="setting_page_txthost">Host</string>
+    <string name="setting_page_txtuser">User</string>
+    <string name="setting_page_txtpassword">Password</string>
+    <string name="setting_page_txtport">Port</string>
+    <string name="setting_page_btnSave">Save</string>
+    <string name="setting_page_btnCancel">Cancel</string>
+
     <color name="blueTot">#071A52</color>
     <color name="blueListDir">#112C7C</color>
     <color name="blueListFile">#197AAE</color>
@@ -13,5 +22,6 @@
     <color name="whiteText">#ffffff</color>
     <color name="green">#01DF01</color>
     <color name="red">#FF0000</color>
+    <string name="title_activity_setting">Setting</string>
 
 </resources>

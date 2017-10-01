@@ -48,12 +48,14 @@ public class MainActivity extends ActionBarActivity {
     private HashMap<Integer, FileElement> FileListSelected;
     private FileAdapter adapterIstance;
     private ProgressDialog mProgressDialog;
+    private FTPSetting Setting;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_main);
         ConnStatus = false;
+        Setting = FTPSetting.getInstance();
         PathList = new ArrayList<String>();
         DirNameList = new ArrayList<String>();
         TextView txtStatus = (TextView) findViewById(R.id.StatusValue);
@@ -166,11 +168,11 @@ public class MainActivity extends ActionBarActivity {
 
         @Override
         protected Boolean doInBackground(Void... param) {
-            String host = "matteomoretto76.hopto.org";
+            String host = Setting.getHost();
             //String host = "192.168.1.1";
-            int port = 21;
-            String username = "admin";
-            String password = "3007Pollo";
+            int port = Setting.getPort();
+            String username = Setting.getUser();
+            String password = Setting.getPassword();
 
             try {
                 // connecting to the host
