@@ -1,5 +1,7 @@
 package it.matteomoretto.matteomorettoftpconnection;
 
+import android.content.Context;
+
 /**
  * Created by Matteo Moretto on 27/09/2017.
  */
@@ -11,6 +13,7 @@ public class FTPSetting {
     private String user;
     private String password;
     private int port;
+
 
     public static FTPSetting getInstance() {
         return ourInstance;
@@ -55,4 +58,8 @@ public class FTPSetting {
     public void setPort(int port) {
         this.port = port;
     }
+
+
+
+
 }

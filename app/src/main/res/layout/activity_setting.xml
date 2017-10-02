@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/settingLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
@@ -43,7 +44,7 @@
         android:layout_height="match_parent"
         android:background="@color/blueListFile" >
         <TextView
-            android:id="@+id/UsetrPort"
+            android:id="@+id/UserPort"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"

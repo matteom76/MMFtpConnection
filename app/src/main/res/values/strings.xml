@@ -6,6 +6,7 @@
     <string name="statusdescr">Status:</string>
     <string name="action_connect">Connect</string>
     <string name="action_disconnect">Disconnect</string>
+    <string name="action_setting">Setting</string>
 
     <string name="setting_page">Setting</string>
     <string name="setting_page_txthost">Host</string>
