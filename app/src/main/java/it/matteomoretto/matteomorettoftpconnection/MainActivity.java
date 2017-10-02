@@ -3,6 +3,8 @@ package it.matteomoretto.matteomorettoftpconnection;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -49,6 +51,13 @@ public class MainActivity extends ActionBarActivity {
     private FileAdapter adapterIstance;
     private ProgressDialog mProgressDialog;
     private FTPSetting Setting;
+    private SharedPreferences sharedPreferences;
+
+    private static final String SettingPreferences = "SettingPreferences" ;
+    private static final String HostKey = "hostKey";
+    private static final String UserKey= "userKey";
+    private static final String PasswordKey= "passwordKey";
+    private static final String PortKey= "portKey";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -159,9 +168,17 @@ public class MainActivity extends ActionBarActivity {
             case R.id.action_disconnect:
                 new DisconnectFTP().execute();
                 break;
+            case R.id.action_setting:
+                Intent PageSetting = new Intent(this,SettingActivity.class);
+                startActivity(PageSetting);
+                break;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void GetInfoPreferences() {
+        sharedPreferences = getSharedPreferences(SettingPreferences, Context.MODE_PRIVATE);
     }
 
     private class MakeFTPConnection extends AsyncTask<Void, Void, Boolean> {
