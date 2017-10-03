@@ -1,21 +1,31 @@
 package it.matteomoretto.matteomorettoftpconnection;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TableLayout;
+import android.widget.Toast;
 
 public class SettingActivity extends ActionBarActivity {
 
     private Intent ReturnMainPage;
     private FTPSetting Setting;
+
+    private static final String SettingPreferences = "SettingPreferences" ;
+    private static final String HostKey = "hostKey";
+    private static final String UserKey= "userKey";
+    private static final String PasswordKey= "passwordKey";
+    private static final String PortKey= "portKey";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,13 +33,13 @@ public class SettingActivity extends ActionBarActivity {
         setContentView(R.layout.activity_setting);
 
         Setting = FTPSetting.getInstance();
-        EditText host = getElement(R.id.Host);
+        final EditText host = getElement(R.id.Host);
         host.setText(Setting.getHost());
-        EditText port = getElement(R.id.Port);
+        final EditText port = getElement(R.id.Port);
         port.setText(String.valueOf(Setting.getPort()));
-        EditText user = getElement(R.id.User);
+        final EditText user = getElement(R.id.User);
         user.setText(Setting.getUser());
-        EditText password = getElement(R.id.Password);
+        final EditText password = getElement(R.id.Password);
         password.setText(Setting.getPassword());
 
         ReturnMainPage = new Intent(this,MainActivity.class);
@@ -37,7 +47,8 @@ public class SettingActivity extends ActionBarActivity {
         CancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(ReturnMainPage);
+                finish();
+                //startActivity(ReturnMainPage);
             }
         });
 
@@ -46,7 +57,34 @@ public class SettingActivity extends ActionBarActivity {
         SaveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(ReturnMainPage);
+                SharedPreferences prefs = getSharedPreferences(SettingPreferences, SettingActivity.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+
+                if (!(String.valueOf(port.getText()).equals(""))) {
+                    String hosttxt = String.valueOf(host.getText());
+                    int porttxt = Integer.parseInt(String.valueOf(port.getText()));
+                    String usertxt = String.valueOf(user.getText());
+                    String passwordtxt = String.valueOf(password.getText());
+                    Setting.setHost(hosttxt);
+                    Setting.setPort(porttxt);
+                    Setting.setUser(usertxt);
+                    Setting.setPassword(passwordtxt);
+
+                    editor.putString(HostKey, hosttxt);
+                    editor.putInt(PortKey, porttxt);
+                    editor.putString(UserKey, usertxt);
+                    editor.putString(PasswordKey, passwordtxt);
+                    editor.commit();
+                    finish();
+                    //startActivity(ReturnMainPage);
+                }
+                else
+
+                {
+                    MakeToastMessage(SettingActivity.this,getResources().getString(R.string.error_not0));
+                }
+
+
             }
         });
 
@@ -81,5 +119,14 @@ public class SettingActivity extends ActionBarActivity {
     private  <T> T getElement(int element) {
         T findelement = (T) SettingActivity.this.findViewById(element);
         return findelement;
+    }
+
+
+    private void MakeToastMessage(Context context,String message) {
+        Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        View view = toast.getView();
+        view.setBackgroundColor(getResources().getColor(R.color.red));
+        toast.show();
     }
 }

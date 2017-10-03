@@ -13,6 +13,7 @@ public class FTPSetting {
     private String user;
     private String password;
     private int port;
+    private boolean firstsetting;
 
 
     public static FTPSetting getInstance() {
@@ -20,11 +21,17 @@ public class FTPSetting {
     }
 
     private FTPSetting() {
+        /*
         setHost("matteomoretto76.hopto.org");
         setUser("admin");
         setPassword("3007Pollo");
         setPort(21);
-
+        */
+        setHost("nullvalue");
+        setUser("nullvalue");
+        setPassword("nullvalue");
+        setPort(0);
+        setFirstsetting(true);
     }
 
     public String getHost() {
@@ -60,6 +67,11 @@ public class FTPSetting {
     }
 
 
+    public boolean isFirstsetting() {
+        return firstsetting;
+    }
 
-
+    public void setFirstsetting(boolean firstsetting) {
+        this.firstsetting = firstsetting;
+    }
 }

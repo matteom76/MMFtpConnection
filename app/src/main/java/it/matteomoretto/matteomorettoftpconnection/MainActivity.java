@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -51,7 +53,6 @@ public class MainActivity extends ActionBarActivity {
     private FileAdapter adapterIstance;
     private ProgressDialog mProgressDialog;
     private FTPSetting Setting;
-    private SharedPreferences sharedPreferences;
 
     private static final String SettingPreferences = "SettingPreferences" ;
     private static final String HostKey = "hostKey";
@@ -65,6 +66,11 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         ConnStatus = false;
         Setting = FTPSetting.getInstance();
+
+        if (Setting.isFirstsetting()) {
+           GetInfoPreferences(Setting);
+        }
+
         PathList = new ArrayList<String>();
         DirNameList = new ArrayList<String>();
         TextView txtStatus = (TextView) findViewById(R.id.StatusValue);
@@ -177,8 +183,15 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void GetInfoPreferences() {
+    private void GetInfoPreferences(FTPSetting setting) {
+        SharedPreferences sharedPreferences;
         sharedPreferences = getSharedPreferences(SettingPreferences, Context.MODE_PRIVATE);
+        setting.setHost(sharedPreferences.getString(HostKey,"null"));
+        setting.setPort(sharedPreferences.getInt(PortKey,0));
+        setting.setPassword(sharedPreferences.getString(PasswordKey,"null"));
+        setting.setUser(sharedPreferences.getString(UserKey,"null"));
+        setting.setFirstsetting(false);
+
     }
 
     private class MakeFTPConnection extends AsyncTask<Void, Void, Boolean> {
@@ -308,6 +321,10 @@ public class MainActivity extends ActionBarActivity {
                     });
                 }
             }
+            else {
+                MakeToastMessage(MainActivity.this,getResources().getString(R.string.error_connection));
+            }
+
         }
     }
 
@@ -359,6 +376,7 @@ public class MainActivity extends ActionBarActivity {
 
     private class DownLoadFile extends AsyncTask<Void, String, Boolean> {
 
+        String errorMessage;
 
         @Override
         protected void onPreExecute() {
@@ -391,7 +409,7 @@ public class MainActivity extends ActionBarActivity {
                         DownloadPath = PathToCheck;
                     }
                     else {
-                        Log.i("ErrorDir:", "Error creation");
+                        errorMessage = getResources().getString(R.string.error_foldercreation);
                         return false;
                     }
                 }
@@ -402,11 +420,13 @@ public class MainActivity extends ActionBarActivity {
                 String fileName = fileToDownload.getFileName();
                 String filePath = ActualPath + fileName;
                 if (!(DownloadFileProgress(DownloadPath,filePath,fileName,fileToDownload.getFileSize()))) {
+                    errorMessage = getResources().getString(R.string.error_downloadfile);
                     return false;
                 }
                 try {
                     ConnReference.completePendingCommand();
                 } catch (IOException e) {
+                    errorMessage = getResources().getString(R.string.error_duringdownload);
                     e.printStackTrace();
                 }
             }
@@ -466,13 +486,25 @@ public class MainActivity extends ActionBarActivity {
 
         @Override
         protected void onPostExecute(Boolean status) {
-            Log.i("Download:", String.valueOf(status));
+            if (!(status)) {
+                MakeToastMessage(MainActivity.this,errorMessage);
+            }
+
             mProgressDialog.dismiss();
             mProgressDialog = null;
         }
 
 
     }
+
+    private void MakeToastMessage(Context context,String message) {
+        Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        View view = toast.getView();
+        view.setBackgroundColor(getResources().getColor(R.color.red));
+        toast.show();
+    }
+
 }
 
 

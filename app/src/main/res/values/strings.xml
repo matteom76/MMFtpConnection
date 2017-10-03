@@ -15,6 +15,7 @@
     <string name="setting_page_txtport">Port</string>
     <string name="setting_page_btnSave">Save</string>
     <string name="setting_page_btnCancel">Cancel</string>
+    <string name="title_activity_setting">Setting</string>
 
     <color name="blueTot">#071A52</color>
     <color name="blueListDir">#112C7C</color>
@@ -23,6 +24,11 @@
     <color name="whiteText">#ffffff</color>
     <color name="green">#01DF01</color>
     <color name="red">#FF0000</color>
-    <string name="title_activity_setting">Setting</string>
+
+    <string name="error_not0">Port must be > 0!</string>
+    <string name="error_connection">Connection error. Check setting.</string>
+    <string name="error_foldercreation">Error during folder creation.</string>
+    <string name="error_downloadfile">Error during files download.</string>
+    <string name="error_duringdownload">Connection error during files download.</string>
 
 </resources>
