@@ -3,6 +3,7 @@ package it.matteomoretto.matteomorettoftpconnection;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
@@ -26,6 +28,7 @@ public class SettingActivity extends ActionBarActivity {
     private static final String UserKey= "userKey";
     private static final String PasswordKey= "passwordKey";
     private static final String PortKey= "portKey";
+    private static final String DestinationKey= "destinationKey";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,22 @@ public class SettingActivity extends ActionBarActivity {
         user.setText(Setting.getUser());
         final EditText password = getElement(R.id.Password);
         password.setText(Setting.getPassword());
+        final RadioButton selDeviceMemory = getElement(R.id.selectDeviceMemory);
+        final RadioButton selExternalSD = getElement(R.id.selectExternalSD);
+
+        if (Setting.isDestinationExtSD() && (Setting.externalMemoryAvailable())) {
+            selDeviceMemory.setChecked(false);
+            selExternalSD.setChecked(true);
+        }
+        else
+        {
+            selDeviceMemory.setChecked(true);
+            selExternalSD.setChecked(false);
+        }
+
+        if (!(Setting.externalMemoryAvailable())) {
+            selExternalSD.setEnabled(false);
+        }
 
         ReturnMainPage = new Intent(this,MainActivity.class);
         Button CancelBtn = getElement(R.id.BtnCancelSetting);
@@ -69,6 +88,16 @@ public class SettingActivity extends ActionBarActivity {
                     Setting.setPort(porttxt);
                     Setting.setUser(usertxt);
                     Setting.setPassword(passwordtxt);
+
+                    if ((selExternalSD.isChecked()) && (Setting.externalMemoryAvailable())) {
+                        Setting.setDestinationExtSD(true);
+                        editor.putBoolean(DestinationKey,true);
+                    }
+                    else
+                    {
+                        Setting.setDestinationExtSD(false);
+                        editor.putBoolean(DestinationKey,false);
+                    }
 
                     editor.putString(HostKey, hosttxt);
                     editor.putInt(PortKey, porttxt);
@@ -129,4 +158,5 @@ public class SettingActivity extends ActionBarActivity {
         view.setBackgroundColor(getResources().getColor(R.color.red));
         toast.show();
     }
+
 }

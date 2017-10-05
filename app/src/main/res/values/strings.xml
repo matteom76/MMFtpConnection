@@ -16,6 +16,8 @@
     <string name="setting_page_btnSave">Save</string>
     <string name="setting_page_btnCancel">Cancel</string>
     <string name="title_activity_setting">Setting</string>
+    <string name="setting_page_DeviceMemory">Device memory</string>
+    <string name="setting_page_ExternalSD">External SD</string>
 
     <color name="blueTot">#071A52</color>
     <color name="blueListDir">#112C7C</color>

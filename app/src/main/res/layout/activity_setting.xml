@@ -66,7 +66,6 @@
             android:layout_weight="7"
             android:ems="10"
             android:inputType="number"
-            android:numeric="integer"
             android:textColor="@color/whiteText" />
     </TableRow>
         <TableRow
@@ -125,6 +124,36 @@
             android:inputType="textPassword"
             android:layout_column="2"
             android:layout_weight="7"/>
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+        android:background="@color/blueListFile" >
+
+        <RadioButton
+            android:id="@+id/selectDeviceMemory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_column="1"
+            android:layout_weight="5"
+            android:ems="10"
+            android:text="@string/setting_page_DeviceMemory"
+            android:textColor="@color/whiteText"
+            android:backgroundTint="@color/whiteText" />
+        <RadioButton
+            android:id="@+id/selectExternalSD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:ems="10"
+            android:text="@string/setting_page_ExternalSD"
+            android:textColor="@color/whiteText"
+            android:backgroundTint="@color/whiteText"
+            android:layout_column="2"
+            android:layout_weight="5" />
     </TableRow>
 
     <TableRow

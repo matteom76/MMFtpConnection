@@ -1,6 +1,7 @@
 package it.matteomoretto.matteomorettoftpconnection;
 
 import android.content.Context;
+import android.os.Environment;
 
 /**
  * Created by Matteo Moretto on 27/09/2017.
@@ -13,6 +14,7 @@ public class FTPSetting {
     private String user;
     private String password;
     private int port;
+    private boolean destinationExtSD;
     private boolean firstsetting;
 
 
@@ -31,6 +33,7 @@ public class FTPSetting {
         setUser("nullvalue");
         setPassword("nullvalue");
         setPort(0);
+        setDestinationExtSD(false);
         setFirstsetting(true);
     }
 
@@ -73,5 +76,22 @@ public class FTPSetting {
 
     public void setFirstsetting(boolean firstsetting) {
         this.firstsetting = firstsetting;
+    }
+
+    public boolean isDestinationExtSD() {
+        return destinationExtSD;
+    }
+
+    public void setDestinationExtSD(boolean destinationExtSD) {
+        this.destinationExtSD = destinationExtSD;
+    }
+
+    public boolean externalMemoryAvailable() {
+        if (Environment.isExternalStorageRemovable()) {
+            //device support sd card. We need to check sd card availability.
+            String state = Environment.getExternalStorageState();
+            return state.equals(Environment.MEDIA_MOUNTED);
+        }//device not support sd card.
+        return false;
     }
 }
