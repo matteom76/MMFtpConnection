@@ -2,6 +2,9 @@ package it.matteomoretto.matteomorettoftpconnection;
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
+
+import static android.os.Environment.*;
 
 /**
  * Created by Matteo Moretto on 27/09/2017.
@@ -87,10 +90,16 @@ public class FTPSetting {
     }
 
     public boolean externalMemoryAvailable() {
-        if (Environment.isExternalStorageRemovable()) {
+        String state = getExternalStorageState();
+        Log.i("device:",state);
+        if (state.equals(MEDIA_MOUNTED)) {
+            Log.i("device:","OK");
+        }
+        if (isExternalStorageRemovable()) {
             //device support sd card. We need to check sd card availability.
-            String state = Environment.getExternalStorageState();
-            return state.equals(Environment.MEDIA_MOUNTED);
+
+            Log.i("device:",state);
+            return state.equals(MEDIA_MOUNTED);
         }//device not support sd card.
         return false;
     }
