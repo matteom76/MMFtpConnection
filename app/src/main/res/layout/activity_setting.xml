@@ -143,6 +143,13 @@
             android:text="@string/setting_page_DeviceMemory"
             android:textColor="@color/whiteText"
             android:backgroundTint="@color/whiteText" />
+
+        <Button
+            android:id="@+id/getpathbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Button" />
+
         <RadioButton
             android:id="@+id/selectExternalSD"
             android:layout_width="wrap_content"

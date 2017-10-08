@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 public class SettingActivity extends ActionBarActivity {
 
+    private static final int PICKFILE_REQUEST_CODE = 0 ;
     private Intent ReturnMainPage;
     private FTPSetting Setting;
 
@@ -68,6 +69,17 @@ public class SettingActivity extends ActionBarActivity {
             public void onClick(View v) {
                 finish();
                 //startActivity(ReturnMainPage);
+            }
+        });
+
+        final Button selPathbtn = getElement(R.id.getpathbtn);
+        selPathbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                //intent.setType("/");
+                //intent.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivityForResult(intent, PICKFILE_REQUEST_CODE);
             }
         });
 
@@ -159,4 +171,12 @@ public class SettingActivity extends ActionBarActivity {
         toast.show();
     }
 
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        String Fpath = data.getDataString();
+        Log.i("Path selezionato:",Fpath);
+        //TODO handle your request here
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 }
+
