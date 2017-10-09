@@ -17,7 +17,6 @@ public class FTPSetting {
     private String user;
     private String password;
     private int port;
-    private boolean destinationExtSD;
     private boolean firstsetting;
 
 
@@ -36,7 +35,6 @@ public class FTPSetting {
         setUser("nullvalue");
         setPassword("nullvalue");
         setPort(0);
-        setDestinationExtSD(false);
         setFirstsetting(true);
     }
 
@@ -81,26 +79,4 @@ public class FTPSetting {
         this.firstsetting = firstsetting;
     }
 
-    public boolean isDestinationExtSD() {
-        return destinationExtSD;
-    }
-
-    public void setDestinationExtSD(boolean destinationExtSD) {
-        this.destinationExtSD = destinationExtSD;
-    }
-
-    public boolean externalMemoryAvailable() {
-        String state = getExternalStorageState();
-        Log.i("device:",state);
-        if (state.equals(MEDIA_MOUNTED)) {
-            Log.i("device:","OK");
-        }
-        if (isExternalStorageRemovable()) {
-            //device support sd card. We need to check sd card availability.
-
-            Log.i("device:",state);
-            return state.equals(MEDIA_MOUNTED);
-        }//device not support sd card.
-        return false;
-    }
 }

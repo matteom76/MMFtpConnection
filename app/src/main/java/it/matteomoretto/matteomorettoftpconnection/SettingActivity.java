@@ -3,6 +3,8 @@ package it.matteomoretto.matteomorettoftpconnection;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -20,7 +22,6 @@ import android.widget.Toast;
 
 public class SettingActivity extends ActionBarActivity {
 
-    private static final int PICKFILE_REQUEST_CODE = 0 ;
     private Intent ReturnMainPage;
     private FTPSetting Setting;
 
@@ -35,7 +36,7 @@ public class SettingActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
-
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         Setting = FTPSetting.getInstance();
         final EditText host = getElement(R.id.Host);
         host.setText(Setting.getHost());
@@ -45,22 +46,8 @@ public class SettingActivity extends ActionBarActivity {
         user.setText(Setting.getUser());
         final EditText password = getElement(R.id.Password);
         password.setText(Setting.getPassword());
-        final RadioButton selDeviceMemory = getElement(R.id.selectDeviceMemory);
-        final RadioButton selExternalSD = getElement(R.id.selectExternalSD);
 
-        if (Setting.isDestinationExtSD() && (Setting.externalMemoryAvailable())) {
-            selDeviceMemory.setChecked(false);
-            selExternalSD.setChecked(true);
-        }
-        else
-        {
-            selDeviceMemory.setChecked(true);
-            selExternalSD.setChecked(false);
-        }
 
-        if (!(Setting.externalMemoryAvailable())) {
-            selExternalSD.setEnabled(false);
-        }
 
         ReturnMainPage = new Intent(this,MainActivity.class);
         Button CancelBtn = getElement(R.id.BtnCancelSetting);
@@ -72,16 +59,7 @@ public class SettingActivity extends ActionBarActivity {
             }
         });
 
-        final Button selPathbtn = getElement(R.id.getpathbtn);
-        selPathbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                //intent.setType("/");
-                //intent.addCategory(Intent.CATEGORY_OPENABLE);
-                startActivityForResult(intent, PICKFILE_REQUEST_CODE);
-            }
-        });
+
 
         final Button SaveBtn = getElement(R.id.BtnSaveSetting);
         SaveBtn.setEnabled(false);
@@ -100,16 +78,6 @@ public class SettingActivity extends ActionBarActivity {
                     Setting.setPort(porttxt);
                     Setting.setUser(usertxt);
                     Setting.setPassword(passwordtxt);
-
-                    if ((selExternalSD.isChecked()) && (Setting.externalMemoryAvailable())) {
-                        Setting.setDestinationExtSD(true);
-                        editor.putBoolean(DestinationKey,true);
-                    }
-                    else
-                    {
-                        Setting.setDestinationExtSD(false);
-                        editor.putBoolean(DestinationKey,false);
-                    }
 
                     editor.putString(HostKey, hosttxt);
                     editor.putInt(PortKey, porttxt);
@@ -171,12 +139,6 @@ public class SettingActivity extends ActionBarActivity {
         toast.show();
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        String Fpath = data.getDataString();
-        Log.i("Path selezionato:",Fpath);
-        //TODO handle your request here
-        super.onActivityResult(requestCode, resultCode, data);
-    }
 
 }
 

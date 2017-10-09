@@ -59,7 +59,6 @@ public class MainActivity extends ActionBarActivity {
     private static final String UserKey= "userKey";
     private static final String PasswordKey= "passwordKey";
     private static final String PortKey= "portKey";
-    private static final String DestinationKey= "destinationKey";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -191,17 +190,6 @@ public class MainActivity extends ActionBarActivity {
         setting.setPort(sharedPreferences.getInt(PortKey,0));
         setting.setPassword(sharedPreferences.getString(PasswordKey,"null"));
         setting.setUser(sharedPreferences.getString(UserKey,"null"));
-
-        boolean Destination = sharedPreferences.getBoolean(DestinationKey,false);
-
-        if ((Destination) && (setting.externalMemoryAvailable())) {
-            setting.setDestinationExtSD(true);
-        }
-        else
-        {
-            setting.setDestinationExtSD(false);
-        }
-
         setting.setFirstsetting(false);
 
     }
