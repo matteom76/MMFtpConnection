@@ -30,7 +30,7 @@ public class SettingActivity extends ActionBarActivity {
     private static final String UserKey= "userKey";
     private static final String PasswordKey= "passwordKey";
     private static final String PortKey= "portKey";
-    private static final String DestinationKey= "destinationKey";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
