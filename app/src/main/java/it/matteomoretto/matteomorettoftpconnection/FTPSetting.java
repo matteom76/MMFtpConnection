@@ -25,12 +25,7 @@ public class FTPSetting {
     }
 
     private FTPSetting() {
-        /*
-        setHost("matteomoretto76.hopto.org");
-        setUser("admin");
-        setPassword("3007Pollo");
-        setPort(21);
-        */
+
         setHost("nullvalue");
         setUser("nullvalue");
         setPassword("nullvalue");

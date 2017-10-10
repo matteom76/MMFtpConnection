@@ -8,8 +8,10 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -64,6 +66,9 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.mipmap.ic_mmftp);
         ConnStatus = false;
         Setting = FTPSetting.getInstance();
 
@@ -216,8 +221,10 @@ public class MainActivity extends ActionBarActivity {
                         ConnStatus = ConnReference.login(username, password);
                         ConnReference.setFileType(FTP.BINARY_FILE_TYPE);
                         ConnReference.enterLocalPassiveMode();
-                        ActualPath = "volume(sda1)/";
-                        ActualDir = "volume(sda1)";
+                        //ActualPath = "volume(sda1)/";
+                        //ActualDir = "volume(sda1)";
+                        ActualPath = "/";
+                        ActualDir = "";
                         PathList.clear();
                         DirNameList.clear();
                         Log.i("Result: ", ConnReference.getStatus());
